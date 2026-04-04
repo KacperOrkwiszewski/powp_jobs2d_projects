@@ -4,6 +4,7 @@ import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.Job2dDriver;
 import edu.kis.powp.jobs2d.drivers.DriverManager;
 import edu.kis.powp.jobs2d.drivers.SelectDriverMenuOptionListener;
+import edu.kis.powp.jobs2d.drivers.RecordingDriver;
 
 public class DriverFeature {
 
@@ -37,9 +38,14 @@ public class DriverFeature {
 
     /**
      * Update driver info.
+     * Shows actual target driver name and recording status "[REC]" / "[NO REC]".
      */
     public static void updateDriverInfo() {
-        app.updateInfo(driverManager.getCurrentDriver().toString());
+        RecordingDriver recDriver = driverManager.getRecordingDriver();
+        Job2dDriver target = recDriver.getTarget();
+        String name = (target == null) ? "No driver" : target.toString();
+        String status = recDriver.isRecordingEnabled() ? " [REC]" : " [NO REC]";
+        app.updateInfo(name + status);
     }
 
 }
