@@ -15,11 +15,10 @@ public class RecordingFeature {
 
         recordingDriver = new RecordingDriver(driverManager.getCurrentDriver());
 
-        driverManager.getChangePublisher()
-                .addSubscriber(new EnsureRecordingDriverIsCurrent(driverManager, recordingDriver));
+        EnsureRecordingDriverIsCurrent subscriber = new EnsureRecordingDriverIsCurrent(driverManager, recordingDriver);
+        driverManager.getChangePublisher().addSubscriber(subscriber);
 
-        driverManager.setCurrentDriver(recordingDriver);
-
+        subscriber.update();
     }
 
     public static RecordingDriver getRecordingDriver() {
