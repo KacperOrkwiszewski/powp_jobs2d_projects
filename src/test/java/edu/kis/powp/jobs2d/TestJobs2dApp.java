@@ -10,6 +10,7 @@ import edu.kis.legacy.drawer.shape.LineFactory;
 import edu.kis.powp.appbase.Application;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindow;
 import edu.kis.powp.jobs2d.command.gui.CommandManagerWindowCommandChangeObserver;
+import edu.kis.powp.jobs2d.drivers.usage.LoggerUsageSubscriber;
 import edu.kis.powp.jobs2d.drivers.adapter.LineDriverAdapter;
 import edu.kis.powp.jobs2d.drivers.logger.TrackingLoggerDriver;
 import edu.kis.powp.jobs2d.drivers.transformations.*;
@@ -20,7 +21,7 @@ import edu.kis.powp.jobs2d.events.SelectTestFigureOptionListener;
 import edu.kis.powp.jobs2d.features.CommandsFeature;
 import edu.kis.powp.jobs2d.features.DrawerFeature;
 import edu.kis.powp.jobs2d.features.DriverFeature;
-import edu.kis.powp.jobs2d.drivers.UsageMonitorDriver;
+import edu.kis.powp.jobs2d.drivers.usage.UsageMonitorDriver;
 
 public class TestJobs2dApp {
     private final static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -89,8 +90,9 @@ public class TestJobs2dApp {
         Job2dDriver scaledAndRotatedDriver = new TransformingDriver(scaledDriver, rotate, "Transform: Scaled 2x & Rotated 45");
         DriverFeature.addDriver(scaledAndRotatedDriver.toString(), scaledAndRotatedDriver);
 
-        Job2dDriver monitoredSpecialDriver = new UsageMonitorDriver(driver);
-        DriverFeature.addDriver("Monitored Line Simulator", monitoredSpecialDriver);
+        UsageMonitorDriver monitoredDriver = new UsageMonitorDriver(driver);
+        monitoredDriver.addSubscriber(new LoggerUsageSubscriber());
+        DriverFeature.addDriver("Line Simulator (Monitored)", monitoredDriver);
 
     }
 
