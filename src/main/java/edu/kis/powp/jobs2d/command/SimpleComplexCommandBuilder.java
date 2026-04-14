@@ -42,6 +42,10 @@ public class SimpleComplexCommandBuilder {
         return new CompoundCommand(this.commands, this.name);
     }
 
+    public ImmutableCompoundCommand buildImmutable() {
+        return new ImmutableCompoundCommand(name, commands);
+    }
+
     public void reset() {
         this.commands.clear();
         this.name = null;

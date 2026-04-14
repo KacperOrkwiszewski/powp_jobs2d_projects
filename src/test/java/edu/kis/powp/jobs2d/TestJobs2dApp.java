@@ -50,9 +50,11 @@ public class TestJobs2dApp {
      */
     private static void setupCommandTests(Application application) {
         application.addTest("Load secret command", new SelectLoadSecretCommandOptionListener());
+        application.addTest("Load immutable rectangle command", new SelectLoadImmutableRectangleCommandOptionListener());
+
         application.addTest("Load kite command", new SelectLoadKiteCommandOptionListener());
         application.addTest("Load recorded macro", new SelectLoadRecordedMacroOptionListener());
-      
+
         application.addTest("Clear panel", new SelectClearPanelOptionListener());
         application.addTest("Run command", new SelectRunCurrentCommandOptionListener(DriverFeature.getDriverManager()));
 
