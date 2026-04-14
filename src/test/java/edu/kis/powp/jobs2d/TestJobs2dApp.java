@@ -90,8 +90,14 @@ public class TestJobs2dApp {
         DriverFeature.addDriver(scaledAndRotatedDriver.toString(), scaledAndRotatedDriver);
 
         driver = new LineDriverAdapter(drawerController, LineFactory.getBasicLine(), "basic");
-        Job2dDriver animatedDriver = new RealTimeDriver(driver, 10);
-        DriverFeature.addDriver("Real-Time Driver", animatedDriver);
+        Job2dDriver animatedDriver = new RealTimeDriver(driver, 10, 10, "Real-Time Driver 1x speed");
+        DriverFeature.addDriver(animatedDriver.toString(), animatedDriver);
+
+        animatedDriver = new RealTimeDriver(driver, 5, 5, "Real-Time Driver 2x speed");
+        DriverFeature.addDriver(animatedDriver.toString(), animatedDriver);
+
+        animatedDriver = new RealTimeDriver(driver, 1, 1, "Real-Time Driver 10x speed");
+        DriverFeature.addDriver(animatedDriver.toString(), animatedDriver);
     }
 
     private static void setupWindows(Application application) {
