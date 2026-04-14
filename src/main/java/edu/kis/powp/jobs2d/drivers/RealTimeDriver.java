@@ -5,23 +5,28 @@ import edu.kis.powp.jobs2d.Job2dDriver;
 import javax.swing.SwingUtilities;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiConsumer;
 
 public class RealTimeDriver implements Job2dDriver {
     private final Job2dDriver innerDriver;
-    private final int delayMilliseconds;
+    private final int operationToDelayMs;
+    private final int setPositionDelayMs;
+    private final String name;
 
     private volatile int currentX;
     private volatile int currentY;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public RealTimeDriver(Job2dDriver innerDriver, int delayMilliseconds) {
-        if (delayMilliseconds <= 0) {
+    public RealTimeDriver(Job2dDriver innerDriver, int operationToDelayMs, int setPositionDelayMs, String name) {
+        if (operationToDelayMs <= 0 || setPositionDelayMs <= 0) {
             throw new IllegalArgumentException("Delay must be a positive integer (milliseconds)!");
         }
 
         this.innerDriver = innerDriver;
-        this.delayMilliseconds = delayMilliseconds;
+        this.operationToDelayMs = operationToDelayMs;
+        this.setPositionDelayMs = setPositionDelayMs;
+        this.name = name;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class RealTimeDriver implements Job2dDriver {
         currentX = x;
         currentY = y;
 
-        executor.submit(() -> moveRealTime(startX, startY, x, y, true));
+        executor.submit(() -> moveRealTime(startX, startY, x, y, innerDriver::operateTo, operationToDelayMs));
     }
 
     @Override
@@ -43,10 +48,10 @@ public class RealTimeDriver implements Job2dDriver {
         currentX = x;
         currentY = y;
 
-        executor.submit(() -> moveRealTime(startX, startY, x, y, false));
+        executor.submit(() -> moveRealTime(startX, startY, x, y, innerDriver::setPosition, setPositionDelayMs));
     }
 
-    private void moveRealTime(int x0, int y0, int x1, int y1, boolean draw) {
+    private void moveRealTime(int x0, int y0, int x1, int y1, BiConsumer<Integer, Integer> biConsumer, int delay) {
         int x = x0;
         int y = y0;
 
@@ -62,11 +67,7 @@ public class RealTimeDriver implements Job2dDriver {
             int fx = x;
             int fy = y;
 
-            if (draw) {
-                SwingUtilities.invokeLater(() -> innerDriver.operateTo(fx, fy));
-            } else {
-                SwingUtilities.invokeLater(() -> innerDriver.setPosition(fx, fy));
-            }
+            SwingUtilities.invokeLater(() -> biConsumer.accept(fx,fy));
 
             if (x == x1 && y == y1) {
                 break;
@@ -83,9 +84,9 @@ public class RealTimeDriver implements Job2dDriver {
                 y += stepY;
             }
 
-            if (delayMilliseconds > 0) {
+            if (delay > 0) {
                 try {
-                    Thread.sleep(delayMilliseconds);
+                    Thread.sleep(delay);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -95,6 +96,6 @@ public class RealTimeDriver implements Job2dDriver {
 
     @Override
     public String toString() {
-        return "Real-Time Driver (delay=" + delayMilliseconds + "ms)";
+        return name;
     }
 }
