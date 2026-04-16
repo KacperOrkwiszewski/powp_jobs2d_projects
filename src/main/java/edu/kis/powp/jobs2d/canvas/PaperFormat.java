@@ -17,7 +17,7 @@ public enum PaperFormat implements CanvasFormat {
 
     @Override
     public Shape getShape() {
-        return new Rectangle2D.Double(0, 0, width, height);
+        return new Rectangle2D.Double((double) -width / 2, (double) -height / 2, width, height);
     }
 
     @Override
