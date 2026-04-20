@@ -3,7 +3,7 @@ package edu.kis.powp.jobs2d.canvas;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
-public enum PaperFormat implements CanvasFormat {
+public enum PaperFormat implements ICanvas {
     A4(210, 297),
     B3(353, 500);
 
@@ -16,13 +16,8 @@ public enum PaperFormat implements CanvasFormat {
     }
 
     @Override
-    public Shape getShape() {
-        return new Rectangle2D.Double((double) -width / 2, (double) -height / 2, width, height);
-    }
-
-    @Override
     public boolean contains(int x, int y) {
-        return getShape().contains(x, y);
+        return true;
     }
 
     @Override
